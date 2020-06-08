@@ -77,10 +77,10 @@ function copy_files() {
       cp -rL "${f}" "${VENDOR_DIR}" || echo "Copy of ${f} failed. Ignoring..."
       echo "build --override_repository=${repo_name}=${VENDOR_DIR}/${repo_name}" >> "${BAZELRC}"
     fi
+  done
 
   find "${VENDOR_DIR}" -name .git -type d -print0 | xargs -0 -r rm -rf
   find "${VENDOR_DIR}" -name .gitignore -type f -delete
-done
 }
 
 function apply_local_patches() {
@@ -99,7 +99,7 @@ function apply_local_patches() {
 }
 
 function run_bazel() {
-  bazel --output_base="${OUTPUT_BASE}" fetch //... || true
+  bazel --output_base="${OUTPUT_BASE}" fetch //... && bazel --output_base="${OUTPUT_BASE}" fetch @envoy//test/...
 }
 
 function main() {
